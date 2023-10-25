@@ -31,8 +31,14 @@ def knn_page(df):
     st.write("Your dataset:")
     st.write(df)  # You may want to display a subset of your data here
     
+    # Label encode non-numeric features (job and city)
+    le_job = LabelEncoder()
+    le_city = LabelEncoder()
+    df['job_encoded'] = le_job.fit_transform(df['job'])
+    df['city_encoded'] = le_city.fit_transform(df['city'])
+    
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    X = df[['amt', 'lat', 'long', 'job_encoded', 'city_encoded']]  # Adjust features as needed
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -52,11 +58,15 @@ def knn_page(df):
     # Input fields for user to make predictions
     st.header("Make a KNN Prediction")
     amt = st.number_input("Transaction Amount")
-    lat = st.number_input("Latitude")
-    long = st.number_input("Longitude")
+    job = st.text_input("Job")
+    city = st.text_input("City")
+    
+    # Encode user inputs
+    job_encoded = le_job.transform([job])[0]
+    city_encoded = le_city.transform([city])[0]
     
     # Predict using the user's input
-    prediction = knn.predict([[amt, lat, long]])
+    prediction = knn.predict([[amt, lat, long, job_encoded, city_encoded]])
     
     # Display the prediction
     if prediction[0] == 0:

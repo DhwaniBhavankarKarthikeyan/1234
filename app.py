@@ -46,6 +46,21 @@ def knn_page(df):
     # Calculate and display the accuracy of the model
     accuracy = accuracy_score(y_test, y_pred)
     st.write(f"Accuracy of the KNN model: {accuracy:.2f}")
+    
+    # Input fields for user to make predictions
+    st.header("Make a KNN Prediction")
+    amt = st.number_input("Transaction Amount")
+    lat = st.number_input("Latitude")
+    long = st.number_input("Longitude")
+    
+    # Predict using the user's input
+    prediction = knn.predict([[amt, lat, long]])
+    
+    # Display the prediction
+    if prediction[0] == 0:
+        st.write("Prediction: Not Fraudulent")
+    else:
+        st.write("Prediction: Fraudulent")
 
 def nb_page():
     st.title("Naive Bayes Page")

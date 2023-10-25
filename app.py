@@ -1,15 +1,9 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-#import plotly.express as px
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier 
-#from sklearn.linear_model import LogisticRegression
-#from sklearn.naive_bayes import GaussianNB
-#from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
 
 # Load your dataset
@@ -67,6 +61,10 @@ def knn_page(df):
     amt = st.number_input("Transaction Amount")
     job = st.text_input("Job")
     city = st.text_input("City")
+    
+    # Encode user inputs
+    job_encoded = le_job.transform([job])[0] if job in le_job.classes_ else -1
+    city_encoded = le_city.transform([city])[0] if city in le_city.classes_ else -1
     
     # Predict using the user's input
     prediction = knn.predict([[amt, lat, long, job_encoded, city_encoded]])

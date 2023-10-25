@@ -241,6 +241,7 @@ def eda_page():
     for image_file in image_files:
         st.image(image_file, caption='Image Caption', use_column_width=True)
 
+
 # Create a sidebar navigation menu
 st.sidebar.title("Navigation")
 selected_page = st.sidebar.selectbox(

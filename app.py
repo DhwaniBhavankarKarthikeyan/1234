@@ -129,12 +129,12 @@ selected_page = st.sidebar.selectbox(
 
 # Display the selected page
 if selected_page == "EDA":
-    eda_page()
+    eda_page(df)
 elif selected_page == "KNN":
     knn_page(df)
 elif selected_page == "Naive Bayes":
-    nb_page()
+    nb_page(df)
 elif selected_page == "Logistic Regression":
-    logistic_page()
+    logistic_page(df)
 elif selected_page == "Random Forest Classifier":
-    rf_page()
+    rf_page(df)

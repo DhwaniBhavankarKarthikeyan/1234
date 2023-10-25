@@ -234,7 +234,12 @@ def rf_page(df):
 
 def eda_page():
     st.title("Exploratory Data Analysis (EDA) Page")
-    # Your EDA code, e.g., use Plotly or other visualization libraries
+
+    # Display images using a loop
+    image_files = ["image1.jpg", "image2.jpg", "image3.jpg", "image4.jpg", "image5.jpg", "image6.jpg", "image7.jpg", "image8.jpg", "image9.jpg"]
+    
+    for image_file in image_files:
+        st.image(image_file, caption='Image Caption', use_column_width=True)
 
 # Create a sidebar navigation menu
 st.sidebar.title("Navigation")

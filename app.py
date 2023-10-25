@@ -4,7 +4,7 @@ import pandas as pd
 #import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier 
-#from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB 
 #from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -108,9 +108,49 @@ def nb_page(df):
     else:
         st.write("Prediction: Fraudulent")
 
-def logistic_page():
+def logistic_page(df):
     st.title("Logistic Regression Page")
-    # Your Logistic Regression model code
+    
+    # Sidebar options for Logistic Regression parameters (if any)
+    # Example: regularization parameter (C)
+    # C = st.sidebar.slider("Regularization (C)", 0.01, 10.0, 1.0)
+    
+    # Display the dataset and Logistic Regression results
+    st.write("Your dataset:")
+    st.write(df)  # You may want to display a subset of your data here
+    
+    # Split the data into features (X) and labels (y)
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    y = df['is_fraud']
+    
+    # Split the data into a training and testing set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Create a Logistic Regression classifier and fit it to the training data
+    logistic_model = LogisticRegression()
+    logistic_model.fit(X_train, y_train)
+    
+    # Make predictions on the test set
+    y_pred = logistic_model.predict(X_test)
+    
+    # Calculate and display the accuracy of the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write(f"Accuracy of the Logistic Regression model: {accuracy:.2f}")
+    
+    # Input fields for user to make predictions
+    st.header("Make a Logistic Regression Prediction")
+    amt = st.number_input("Transaction Amount")
+    lat = st.number_input("Latitude")
+    long = st.number_input("Longitude")
+    
+    # Predict using the user's input
+    prediction = logistic_model.predict([[amt, lat, long]])
+    
+    # Display the prediction
+    if prediction[0] == 0:
+        st.write("Prediction: Not Fraudulent")
+    else:
+        st.write("Prediction: Fraudulent")
 
 def rf_page():
     st.title("Random Forest Classifier Page")

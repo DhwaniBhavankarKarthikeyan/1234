@@ -34,11 +34,8 @@ def knn_page(df):
     X = df[['amt', 'lat', 'long', 'gender']]  # Include 'gender' as a feature
     y = df['is_fraud']
     
-    # Encode categorical variables (e.g., 'gender') using one-hot encoding
-    X_encoded = pd.get_dummies(X, columns=['gender'], drop_first=True)
-    
     # Split the data into a training and testing set
-    X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Create a KNN classifier and fit it to the training data
     knn = KNeighborsClassifier(n_neighbors=k_value)
@@ -56,14 +53,11 @@ def knn_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
-    gender = st.selectbox("Gender", ["Male", "Female"])  # Include gender as an input
-    
-    # Convert selected gender to one-hot encoding
-    gender_encoded = pd.get_dummies(pd.DataFrame({'gender': [gender]}), columns=['gender'], drop_first=True)
+    gender = st.selectbox("Gender", ["Male", "Female"])  # Assuming two gender options
     
     # Predict using the user's input
-    input_data = [[amt, lat, long] + gender_encoded.values.tolist()[0]]
-    prediction = knn.predict(input_data)
+    input_data = [amt, lat, long, gender]  # Create input data with 'gender'
+    prediction = knn.predict([input_data])
     
     # Display the prediction
     if prediction[0] == 0:

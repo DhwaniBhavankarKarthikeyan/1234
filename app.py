@@ -61,19 +61,24 @@ def knn_page(df):
         gender_encoded = le_gender.transform([gender])[0]
     
     # Create sensitivity analysis for all permutations of the four features
-    feature_permutations = list(itertools.product([amt, lat, long, gender_encoded], repeat=4))
+    feature_values = [amt, lat, long, gender_encoded]
+    feature_names = ['amt', 'lat', 'long', 'gender_encoded']
     
     sensitivity_values = []
-    for input_data in feature_permutations:
-        prediction = knn.predict([input_data])
+    for feature_permutation in itertools.product(feature_values, repeat=4):
+        input_data = dict(zip(feature_names, feature_permutation))
+        prediction = knn.predict([list(input_data.values())])
         sensitivity_values.append((input_data, prediction[0]))
     
     # Create a DataFrame to store sensitivity analysis results
     sensitivity_df = pd.DataFrame(sensitivity_values, columns=['Features', 'Prediction'])
-    
-    # Create a bar chart to visualize sensitivity
+
+    # Create a heatmap to visualize sensitivity
     st.header("Sensitivity Analysis - All Feature Permutations")
-    st.bar_chart(sensitivity_df.set_index('Features'))
+    heatmap_data = sensitivity_df.pivot('Features', 'Prediction')
+    sns.heatmap(heatmap_data, cmap='coolwarm', annot=True, fmt='d')
+    plt.xticks(rotation=45)
+    st.pyplot()
 
     # Display the prediction
     if prediction[0] == 0:

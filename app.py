@@ -35,8 +35,14 @@ def knn_page(df):
     # Label encode non-numeric features (job and city)
     le_job = LabelEncoder()
     le_city = LabelEncoder()
-    df['job_encoded'] = le_job.fit_transform(df['job'])
-    df['city_encoded'] = le_city.fit_transform(df['city'])
+    
+    # Fit label encoders only on available data
+    le_job.fit(df['job'].values)
+    le_city.fit(df['city'].values)
+    
+    # Transform data, handling unseen labels
+    job_encoded = le_job.transform([job])[0] if job in le_job.classes_ else -1
+    city_encoded = le_city.transform([city])[0] if city in le_city.classes_ else -1
     
     # Split the data into features (X) and labels (y)
     X = df[['amt', 'lat', 'long', 'job_encoded', 'city_encoded']]  # Adjust features as needed
@@ -61,10 +67,6 @@ def knn_page(df):
     amt = st.number_input("Transaction Amount")
     job = st.text_input("Job")
     city = st.text_input("City")
-    
-    # Encode user inputs
-    job_encoded = le_job.transform([job])[0]
-    city_encoded = le_city.transform([city])[0]
     
     # Predict using the user's input
     prediction = knn.predict([[amt, lat, long, job_encoded, city_encoded]])

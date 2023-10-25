@@ -9,6 +9,7 @@ from sklearn.neighbors import KNeighborsClassifier
 #from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.impute import SimpleImputer
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
@@ -30,12 +31,16 @@ def knn_page(df):
     st.write("Your dataset:")
     st.write(df)  # You may want to display a subset of your data here
 
+    # Handle missing or empty values in categorical features
+    df['city'] = df['city'].fillna('Unknown')  # Replace missing values with a label
+    df['job'] = df['job'].fillna('Unknown')  # Replace missing values with a label
+
     # Perform one-hot encoding for categorical features
     encoder = OneHotEncoder()
-    encoded_features = encoder.fit_transform(df[['city', 'job']])
+    encoded_features = encoder.fit_transform(df[['city', 'job'])
 
     # Combine encoded features with numeric features
-    X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long']])).astype(float)
+    X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long'])).astype(float)
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -60,10 +65,10 @@ def knn_page(df):
     job = st.text_input("Job")
 
     # One-hot encode the user inputs
-    user_input = encoder.transform(np.array([[city, job]]))
+    user_input = encoder.transform(np.array([[city, job]]).reshape(1, -1))
     
     # Combine user inputs with numeric features
-    user_features = np.column_stack((user_input.toarray(), np.array([[amt, lat, long]]))).astype(float)
+    user_features = np.column_stack((user_input.toarray(), np.array([[amt, lat, long]])).astype(float)
     
     # Predict using the user's input
     prediction = knn.predict(user_features)

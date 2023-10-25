@@ -40,7 +40,7 @@ def knn_page(df):
     encoded_features = encoder.fit_transform(df[['city', 'job']])
 
     # Combine encoded features with numeric features
-    X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long'])).astype(float)
+    X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long']])).astype(float)
     y = df['is_fraud']
     
     # Split the data into a training and testing set

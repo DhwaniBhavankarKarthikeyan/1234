@@ -2,15 +2,15 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 #import plotly.express as px
-#from sklearn.model_selection import train_test_split
-#from sklearn.neighbors import KNeighborsClassifier 
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier 
 #from sklearn.linear_model import LogisticRegression
 #from sklearn.naive_bayes import GaussianNB
 #from sklearn.ensemble import RandomForestClassifier
-#from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score
 
 # Load your dataset
-#df = pd.read_csv("Finaldf-2.csv")
+df = pd.read_csv("Finaldf-2.csv")
 
 # Preprocess your data and train models as needed
 
@@ -18,9 +18,34 @@ import pandas as pd
 st.set_page_config(page_title="Fraud Detection App", page_icon="✅")
 
 # Define functions for each page
-def knn_page():
+def knn_page(df):
     st.title("K-Nearest Neighbors (KNN) Page")
-    # Your KNN model code
+    
+    # Sidebar options for KNN parameters
+    st.sidebar.header("KNN Parameters")
+    k_value = st.sidebar.slider("Select the number of neighbors (k)", 1, 20, 5)
+    
+    # Display the dataset and KNN results
+    st.write("Your dataset:")
+    st.write(df)  # You may want to display a subset of your data here
+    
+    # Split the data into features (X) and labels (y)
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    y = df['is_fraud']
+    
+    # Split the data into a training and testing set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Create a KNN classifier and fit it to the training data
+    knn = KNeighborsClassifier(n_neighbors=k_value)
+    knn.fit(X_train, y_train)
+    
+    # Make predictions on the test set
+    y_pred = knn.predict(X_test)
+    
+    # Calculate and display the accuracy of the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write(f"Accuracy of the KNN model: {accuracy:.2f}")
 
 def nb_page():
     st.title("Naive Bayes Page")

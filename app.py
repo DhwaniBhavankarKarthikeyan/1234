@@ -11,9 +11,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
-import itertools
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
@@ -47,6 +44,13 @@ def knn_page(df):
     knn = KNeighborsClassifier(n_neighbors=k_value)
     knn.fit(X_train, y_train)
     
+    # Make predictions on the test set
+    y_pred = knn.predict(X_test)
+    
+    # Calculate and display the accuracy of the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write(f"Accuracy of the KNN model: {accuracy:.2f}")
+    
     # Input fields for user to make predictions
     st.header("Make a KNN Prediction")
     amt = st.number_input("Transaction Amount")
@@ -60,33 +64,15 @@ def knn_page(df):
     else:
         gender_encoded = le_gender.transform([gender])[0]
     
-    # Create sensitivity analysis for all permutations of the four features
-    feature_values = [amt, lat, long, gender_encoded]
-    feature_names = ['amt', 'lat', 'long', 'gender_encoded']
+    # Predict using the user's input
+    input_data = [amt, lat, long, gender_encoded]  # Create input data with 'gender_encoded'
+    prediction = knn.predict([input_data])
     
-    sensitivity_values = []
-    for feature_permutation in itertools.product(feature_values, repeat=4):
-        input_data = dict(zip(feature_names, feature_permutation))
-        prediction = knn.predict([list(input_data.values())])
-        sensitivity_values.append((input_data, prediction[0]))
-    
-    # Create a DataFrame to store sensitivity analysis results
-    sensitivity_df = pd.DataFrame(sensitivity_values, columns=['Features', 'Prediction'])
-
-    # Create a heatmap to visualize sensitivity
-    st.header("Sensitivity Analysis - All Feature Permutations")
-    heatmap_data = sensitivity_df.pivot('Features', 'Prediction')
-    sns.heatmap(heatmap_data, cmap='coolwarm', annot=True, fmt='d')
-    plt.xticks(rotation=45)
-    st.pyplot()
-
     # Display the prediction
     if prediction[0] == 0:
         st.write("Prediction: Not Fraudulent")
     else:
         st.write("Prediction: Fraudulent")
-
-
 
 def nb_page(df):
     st.title("Naive Bayes Page")
@@ -265,7 +251,7 @@ selected_page = st.sidebar.selectbox(
 
 # Display the selected page
 if selected_page == "EDA":
-    eda_page()
+    eda_page(df)
 elif selected_page == "KNN":
     knn_page(df)
 elif selected_page == "Naive Bayes":

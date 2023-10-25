@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier 
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB 
-#from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
@@ -152,9 +152,49 @@ def logistic_page(df):
     else:
         st.write("Prediction: Fraudulent")
 
-def rf_page():
+def rf_page(df):
     st.title("Random Forest Classifier Page")
-    # Your Random Forest model code
+    
+    # Sidebar options for Random Forest parameters (if any)
+    # Example: number of trees (n_estimators)
+    # n_estimators = st.sidebar.slider("Number of Trees (n_estimators)", 10, 100, 50)
+    
+    # Display the dataset and Random Forest results
+    st.write("Your dataset:")
+    st.write(df)  # You may want to display a subset of your data here
+    
+    # Split the data into features (X) and labels (y)
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    y = df['is_fraud']
+    
+    # Split the data into a training and testing set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Create a Random Forest classifier and fit it to the training data
+    rf_model = RandomForestClassifier()
+    rf_model.fit(X_train, y_train)
+    
+    # Make predictions on the test set
+    y_pred = rf_model.predict(X_test)
+    
+    # Calculate and display the accuracy of the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write(f"Accuracy of the Random Forest model: {accuracy:.2f}")
+    
+    # Input fields for user to make predictions
+    st.header("Make a Random Forest Prediction")
+    amt = st.number_input("Transaction Amount")
+    lat = st.number_input("Latitude")
+    long = st.number_input("Longitude")
+    
+    # Predict using the user's input
+    prediction = rf_model.predict([[amt, lat, long]])
+    
+    # Display the prediction
+    if prediction[0] == 0:
+        st.write("Prediction: Not Fraudulent")
+    else:
+        st.write("Prediction: Fraudulent")
 
 def eda_page():
     st.title("Exploratory Data Analysis (EDA) Page")

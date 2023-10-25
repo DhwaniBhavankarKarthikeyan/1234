@@ -12,6 +12,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
 import itertools
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")

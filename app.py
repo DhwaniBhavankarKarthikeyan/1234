@@ -10,7 +10,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import LabelEncoder
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
@@ -32,20 +31,8 @@ def knn_page(df):
     st.write("Your dataset:")
     st.write(df)  # You may want to display a subset of your data here
     
-    # Label encode non-numeric features (job and city)
-    le_job = LabelEncoder()
-    le_city = LabelEncoder()
-    
-    # Fit label encoders only on available data
-    le_job.fit(df['job'].values)
-    le_city.fit(df['city'].values)
-    
-    # Transform data, handling unseen labels
-    job_encoded = le_job.transform([job])[0] if job in le_job.classes_ else -1
-    city_encoded = le_city.transform([city])[0] if city in le_city.classes_ else -1
-    
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long', 'job_encoded', 'city_encoded']]  # Adjust features as needed
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -65,11 +52,11 @@ def knn_page(df):
     # Input fields for user to make predictions
     st.header("Make a KNN Prediction")
     amt = st.number_input("Transaction Amount")
-    job = st.text_input("Job")
-    city = st.text_input("City")
+    lat = st.number_input("Latitude")
+    long = st.number_input("Longitude")
     
     # Predict using the user's input
-    prediction = knn.predict([[amt, lat, long, job_encoded, city_encoded]])
+    prediction = knn.predict([[amt, lat, long]])
     
     # Display the prediction
     if prediction[0] == 0:

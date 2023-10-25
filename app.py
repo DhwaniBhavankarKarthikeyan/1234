@@ -10,9 +10,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
+le_gender = LabelEncoder()
+df['gender_encoded'] = le_gender.fit_transform(df['gender'])
 
 # Preprocess your data and train models as needed
 
@@ -32,7 +35,7 @@ def knn_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    X = df[['amt', 'lat', 'long', 'gender_encoded']]  # Include 'gender_encoded' as a feature
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -54,9 +57,14 @@ def knn_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
+    gender = st.selectbox("Gender", ["Male", "Female"])  # Assuming two gender options
+    
+    # Encode the selected gender to match the encoded values in the dataset
+    gender_encoded = le_gender.transform([gender])[0]
     
     # Predict using the user's input
-    prediction = knn.predict([[amt, lat, long]])
+    input_data = [amt, lat, long, gender_encoded]  # Create input data with 'gender_encoded'
+    prediction = knn.predict([input_data])
     
     # Display the prediction
     if prediction[0] == 0:

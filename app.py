@@ -62,7 +62,7 @@ def knn_page(df):
     user_input = encoder.transform(np.array([[city, job]]))
     
     # Combine user inputs with numeric features
-    user_features = np.column_stack((user_input.toarray(), np.array([[amt, lat, long]])).astype(float)
+    user_features = np.column_stack((user_input.toarray(), np.array([[amt, lat, long]]))).astype(float)
     
     # Predict using the user's input
     prediction = knn.predict(user_features)

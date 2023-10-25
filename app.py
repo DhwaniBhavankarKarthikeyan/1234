@@ -1,10 +1,11 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+#import plotly.express as px
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier 
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
@@ -31,7 +32,7 @@ def knn_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long', 'gender']]  # Include 'gender' as a feature
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -53,11 +54,9 @@ def knn_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
-    gender = st.selectbox("Gender", ["Male", "Female"])  # Assuming two gender options
     
     # Predict using the user's input
-    input_data = [amt, lat, long, gender]  # Create input data with 'gender'
-    prediction = knn.predict([input_data])
+    prediction = knn.predict([[amt, lat, long]])
     
     # Display the prediction
     if prediction[0] == 0:
@@ -77,14 +76,11 @@ def nb_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long', 'gender']]  # Include 'gender' as a feature
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
     y = df['is_fraud']
     
-    # Encode categorical variables (e.g., 'gender') using one-hot encoding
-    X_encoded = pd.get_dummies(X, columns=['gender'], drop_first=True)
-    
     # Split the data into a training and testing set
-    X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Create a Naive Bayes classifier and fit it to the training data (Gaussian Naive Bayes)
     nb = GaussianNB()
@@ -102,14 +98,9 @@ def nb_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
-    gender = st.selectbox("Gender", ["Male", "Female"])  # Include gender as an input
-    
-    # Convert selected gender to one-hot encoding
-    gender_encoded = pd.get_dummies(pd.DataFrame({'gender': [gender]}), columns=['gender'], drop_first=True)
     
     # Predict using the user's input
-    input_data = [[amt, lat, long] + gender_encoded.values.tolist()[0]]
-    prediction = nb.predict(input_data)
+    prediction = nb.predict([[amt, lat, long]])
     
     # Display the prediction
     if prediction[0] == 0:
@@ -129,14 +120,11 @@ def logistic_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long', 'gender']]  # Include 'gender' as a feature
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
     y = df['is_fraud']
     
-    # Encode categorical variables (e.g., 'gender') using one-hot encoding
-    X_encoded = pd.get_dummies(X, columns=['gender'], drop_first=True)
-    
     # Split the data into a training and testing set
-    X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Create a Logistic Regression classifier and fit it to the training data
     logistic_model = LogisticRegression()
@@ -154,14 +142,9 @@ def logistic_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
-    gender = st.selectbox("Gender", ["Male", "Female"])  # Include gender as an input
-    
-    # Convert selected gender to one-hot encoding
-    gender_encoded = pd.get_dummies(pd.DataFrame({'gender': [gender]}), columns=['gender'], drop_first=True)
     
     # Predict using the user's input
-    input_data = [[amt, lat, long] + gender_encoded.values.tolist()[0]]
-    prediction = logistic_model.predict(input_data)
+    prediction = logistic_model.predict([[amt, lat, long]])
     
     # Display the prediction
     if prediction[0] == 0:
@@ -181,14 +164,11 @@ def rf_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long', 'gender']]  # Include 'gender' as a feature
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
     y = df['is_fraud']
     
-    # Encode categorical variables (e.g., 'gender') using one-hot encoding
-    X_encoded = pd.get_dummies(X, columns=['gender'], drop_first=True)
-    
     # Split the data into a training and testing set
-    X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # Create a Random Forest classifier and fit it to the training data
     rf_model = RandomForestClassifier()
@@ -206,14 +186,9 @@ def rf_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
-    gender = st.selectbox("Gender", ["Male", "Female"])  # Include gender as an input
-    
-    # Convert selected gender to one-hot encoding
-    gender_encoded = pd.get_dummies(pd.DataFrame({'gender': [gender]}), columns=['gender'], drop_first=True)
     
     # Predict using the user's input
-    input_data = [[amt, lat, long] + gender_encoded.values.tolist()[0]]
-    prediction = rf_model.predict(input_data)
+    prediction = rf_model.predict([[amt, lat, long]])
     
     # Display the prediction
     if prediction[0] == 0:

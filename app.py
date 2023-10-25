@@ -64,9 +64,49 @@ def knn_page(df):
     else:
         st.write("Prediction: Fraudulent")
 
-def nb_page():
+def nb_page(df):
     st.title("Naive Bayes Page")
-    # Your Naive Bayes model code
+    
+    # Sidebar options for Naive Bayes parameters (if any)
+    # Example: smoothing parameter
+    # alpha = st.sidebar.slider("Smoothing (alpha)", 0.0, 1.0, 0.1)
+    
+    # Display the dataset and Naive Bayes results
+    st.write("Your dataset:")
+    st.write(df)  # You may want to display a subset of your data here
+    
+    # Split the data into features (X) and labels (y)
+    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    y = df['is_fraud']
+    
+    # Split the data into a training and testing set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Create a Naive Bayes classifier and fit it to the training data (Gaussian Naive Bayes)
+    nb = GaussianNB()
+    nb.fit(X_train, y_train)
+    
+    # Make predictions on the test set
+    y_pred = nb.predict(X_test)
+    
+    # Calculate and display the accuracy of the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write(f"Accuracy of the Naive Bayes model: {accuracy:.2f}")
+    
+    # Input fields for user to make predictions
+    st.header("Make a Naive Bayes Prediction")
+    amt = st.number_input("Transaction Amount")
+    lat = st.number_input("Latitude")
+    long = st.number_input("Longitude")
+    
+    # Predict using the user's input
+    prediction = nb.predict([[amt, lat, long]])
+    
+    # Display the prediction
+    if prediction[0] == 0:
+        st.write("Prediction: Not Fraudulent")
+    else:
+        st.write("Prediction: Fraudulent")
 
 def logistic_page():
     st.title("Logistic Regression Page")

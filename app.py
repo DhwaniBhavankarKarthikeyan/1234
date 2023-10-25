@@ -37,7 +37,7 @@ def knn_page(df):
 
     # Perform one-hot encoding for categorical features
     encoder = OneHotEncoder()
-    encoded_features = encoder.fit_transform(df[['city', 'job'])
+    encoded_features = encoder.fit_transform(df[['city', 'job']])
 
     # Combine encoded features with numeric features
     X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long'])).astype(float)

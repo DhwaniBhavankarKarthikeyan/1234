@@ -251,7 +251,7 @@ selected_page = st.sidebar.selectbox(
 
 # Display the selected page
 if selected_page == "EDA":
-    eda_page(df)
+    eda_page()
 elif selected_page == "KNN":
     knn_page(df)
 elif selected_page == "Naive Bayes":

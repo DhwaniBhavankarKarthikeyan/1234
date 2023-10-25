@@ -191,7 +191,7 @@ def rf_page(df):
     st.write(df)  # You may want to display a subset of your data here
     
     # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+    X = df[['amt', 'lat', 'long', 'gender_encoded']]  # Include 'gender_encoded' as a feature
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -213,15 +213,24 @@ def rf_page(df):
     amt = st.number_input("Transaction Amount")
     lat = st.number_input("Latitude")
     long = st.number_input("Longitude")
+    gender = st.selectbox("Gender", df['gender'].unique())  # Allow all unique gender labels
+    
+    # Handle the case of previously unseen labels
+    if gender not in df['gender'].unique():
+        gender_encoded = -1  # Encode unseen labels as -1 (or choose another default value)
+    else:
+        gender_encoded = le_gender.transform([gender])[0]
     
     # Predict using the user's input
-    prediction = rf_model.predict([[amt, lat, long]])
+    input_data = [amt, lat, long, gender_encoded]  # Create input data with 'gender_encoded'
+    prediction = rf_model.predict([input_data])
     
     # Display the prediction
     if prediction[0] == 0:
         st.write("Prediction: Not Fraudulent")
     else:
         st.write("Prediction: Fraudulent")
+
 
 def eda_page():
     st.title("Exploratory Data Analysis (EDA) Page")

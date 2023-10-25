@@ -236,7 +236,7 @@ def eda_page():
     st.title("Exploratory Data Analysis (EDA) Page")
 
     # Display images using a loop
-    image_files = ["image1.jpg", "image2.jpg", "image3.jpg", "image4.jpg", "image5.jpg", "image6.jpg", "image7.jpg", "image8.jpg", "image9.jpg"]
+    image_files = ["WhatsApp Image 2023-10-25 at 10.34.10 AM.jpeg", "WhatsApp Image 2023-10-25 at 10.34.11 AM (1).jpeg", "WhatsApp Image 2023-10-25 at 10.34.11 AM (2).jpeg", "WhatsApp Image 2023-10-25 at 10.34.11 AM.jpeg", "WhatsApp Image 2023-10-25 at 10.34.12 AM (1).jpeg", "WhatsApp Image 2023-10-25 at 10.34.12 AM (2).jpeg", "WhatsApp Image 2023-10-25 at 10.34.12 AM (3).jpeg", "WhatsApp Image 2023-10-25 at 10.34.12 AM.jpeg", "WhatsApp Image 2023-10-25 at 10.34.13 AM.jpeg"]
     
     for image_file in image_files:
         st.image(image_file, caption='Image Caption', use_column_width=True)

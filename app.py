@@ -11,11 +11,15 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
 le_gender = LabelEncoder()
 df['gender_encoded'] = le_gender.fit_transform(df['gender'])
+
+scaler = StandardScaler()
+df[['amt', 'lat', 'long']] = scaler.fit_transform(df[['amt', 'lat', 'long']])
 
 # Preprocess your data and train models as needed
 

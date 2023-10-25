@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
+import itertools
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")
@@ -57,25 +58,27 @@ def knn_page(df):
     else:
         gender_encoded = le_gender.transform([gender])[0]
     
-    # Create a sensitivity analysis by varying the 'amt' feature
+    # Create sensitivity analysis for all permutations of the four features
+    feature_permutations = list(itertools.permutations([amt, lat, long, gender_encoded], 4))
+    
     sensitivity_values = []
-    for new_amt in range(0, 1001, 100):  # Vary the transaction amount from 0 to 1000 with a step of 100
-        input_data = [new_amt, lat, long, gender_encoded]
+    for input_data in feature_permutations:
         prediction = knn.predict([input_data])
-        sensitivity_values.append((new_amt, prediction[0]))
+        sensitivity_values.append((input_data, prediction[0]))
     
     # Create a DataFrame to store sensitivity analysis results
-    sensitivity_df = pd.DataFrame(sensitivity_values, columns=['Transaction Amount', 'Prediction'])
+    sensitivity_df = pd.DataFrame(sensitivity_values, columns=['Features', 'Prediction'])
     
     # Create a bar chart to visualize sensitivity
-    st.header("Sensitivity Analysis - Transaction Amount")
-    st.bar_chart(sensitivity_df.set_index('Transaction Amount'))
+    st.header("Sensitivity Analysis - All Feature Permutations")
+    st.bar_chart(sensitivity_df.set_index('Features'))
 
     # Display the prediction
     if prediction[0] == 0:
         st.write("Prediction: Not Fraudulent")
     else:
         st.write("Prediction: Fraudulent")
+
 
 
 def nb_page(df):

@@ -8,6 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 #from sklearn.naive_bayes import GaussianNB
 #from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import OneHotEncoder
 
 # Load your dataset
 df = pd.read_csv("Finaldf-2.csv")

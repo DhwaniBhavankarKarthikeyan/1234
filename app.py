@@ -59,7 +59,7 @@ def knn_page(df):
         gender_encoded = le_gender.transform([gender])[0]
     
     # Create sensitivity analysis for all permutations of the four features
-    feature_permutations = list(itertools.permutations([amt, lat, long, gender_encoded], 4))
+    feature_permutations = list(itertools.product([amt, lat, long, gender_encoded], repeat=4))
     
     sensitivity_values = []
     for input_data in feature_permutations:

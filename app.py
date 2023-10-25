@@ -28,9 +28,13 @@ def knn_page(df):
     # Display the dataset and KNN results
     st.write("Your dataset:")
     st.write(df)  # You may want to display a subset of your data here
-    
-    # Split the data into features (X) and labels (y)
-    X = df[['amt', 'lat', 'long']]  # Adjust features as needed
+
+    # Perform one-hot encoding for categorical features
+    encoder = OneHotEncoder()
+    encoded_features = encoder.fit_transform(df[['city', 'job']])
+
+    # Combine encoded features with numeric features
+    X = np.column_stack((encoded_features.toarray(), df[['amt', 'lat', 'long'])).astype(float)
     y = df['is_fraud']
     
     # Split the data into a training and testing set
@@ -49,12 +53,19 @@ def knn_page(df):
     
     # Input fields for user to make predictions
     st.header("Make a KNN Prediction")
-    amt = st.number_input("Transaction Amount")
-    lat = st.number_input("Latitude")
-    long = st.number_input("Longitude")
+    
+    # Input fields for the non-numeric features
+    city = st.text_input("City")
+    job = st.text_input("Job")
+
+    # One-hot encode the user inputs
+    user_input = encoder.transform(np.array([[city, job]]))
+    
+    # Combine user inputs with numeric features
+    user_features = np.column_stack((user_input.toarray(), np.array([[amt, lat, long]])).astype(float)
     
     # Predict using the user's input
-    prediction = knn.predict([[amt, lat, long]])
+    prediction = knn.predict(user_features)
     
     # Display the prediction
     if prediction[0] == 0:

@@ -44,13 +44,6 @@ def knn_page(df):
     knn = KNeighborsClassifier(n_neighbors=k_value)
     knn.fit(X_train, y_train)
     
-    # Make predictions on the test set
-    y_pred = knn.predict(X_test)
-    
-    # Calculate and display the accuracy of the model
-    accuracy = accuracy_score(y_test, y_pred)
-    st.write(f"Accuracy of the KNN model: {accuracy:.2f}")
-    
     # Input fields for user to make predictions
     st.header("Make a KNN Prediction")
     amt = st.number_input("Transaction Amount")
@@ -64,15 +57,26 @@ def knn_page(df):
     else:
         gender_encoded = le_gender.transform([gender])[0]
     
-    # Predict using the user's input
-    input_data = [amt, lat, long, gender_encoded]  # Create input data with 'gender_encoded'
-    prediction = knn.predict([input_data])
+    # Create a sensitivity analysis by varying the 'amt' feature
+    sensitivity_values = []
+    for new_amt in range(0, 1001, 100):  # Vary the transaction amount from 0 to 1000 with a step of 100
+        input_data = [new_amt, lat, long, gender_encoded]
+        prediction = knn.predict([input_data])
+        sensitivity_values.append((new_amt, prediction[0]))
     
+    # Create a DataFrame to store sensitivity analysis results
+    sensitivity_df = pd.DataFrame(sensitivity_values, columns=['Transaction Amount', 'Prediction'])
+    
+    # Create a bar chart to visualize sensitivity
+    st.header("Sensitivity Analysis - Transaction Amount")
+    st.bar_chart(sensitivity_df.set_index('Transaction Amount'))
+
     # Display the prediction
     if prediction[0] == 0:
         st.write("Prediction: Not Fraudulent")
     else:
         st.write("Prediction: Fraudulent")
+
 
 def nb_page(df):
     st.title("Naive Bayes Page")
